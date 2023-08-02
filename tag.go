@@ -13,6 +13,8 @@ type Tag struct {
 
 type Tags []Tag
 
+//go:generate mockery --name TagRepository --filename tag_repository.go --outpkg mocks --structname TagRepository --disable-version-string
 type TagRepository interface {
 	InsertTags(ctx context.Context, tags Tags, now time.Time) error
+	UpdateTags(ctx context.Context, tags Tags, now time.Time) error
 }

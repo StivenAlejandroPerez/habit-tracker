@@ -1,7 +1,7 @@
 package postgres
 
+// Inserts
 const (
-	// Insert
 	insertEventsQuery = `
 INSERT
 	INTO
@@ -38,4 +38,36 @@ INSERT
 	habit_records
 (habit_id, record_date, "result", description, created_at, updated_at)
 VALUES %s;`
+)
+
+// Updates
+const (
+	UpdateEventsQuery = `
+UPDATE
+	events
+SET
+	habit_id = %d,
+	subject = '%s',
+	start_at = '%s',
+	end_at = '%s',
+	updated_at = '%s'
+WHERE
+	id = %d;`
+	UpdateGoalsQuery = `
+UPDATE
+	goals
+SET
+	description = '%s',
+	updated_at = '%s'
+WHERE
+	id = %d;`
+	UpdateTagsQuery = `
+UPDATE
+	tags
+SET
+	"name" = '%s',
+	description = '%s',
+	updated_at = '%s'
+WHERE
+	id = %d;`
 )

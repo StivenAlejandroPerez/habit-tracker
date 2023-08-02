@@ -28,6 +28,15 @@ func (gr *GoalRepository) InsertGoals(ctx context.Context, goals habit_tracker.G
 	return nil
 }
 
+func (gr *GoalRepository) UpdateGoals(ctx context.Context, goals habit_tracker.Goals, now time.Time) error {
+	_, err := gr.db.ExecContext(ctx, buildUpdateGoalsQuery(goals, now))
+	if err != nil {
+		return fmt.Errorf("[err:%w]", err)
+	}
+
+	return nil
+}
+
 func buildInsertGoalsQuery(goals habit_tracker.Goals, now time.Time) string {
 	str := strings.Builder{}
 	nowStr := now.Format(time.RFC3339)
@@ -36,4 +45,16 @@ func buildInsertGoalsQuery(goals habit_tracker.Goals, now time.Time) string {
 	}
 
 	return fmt.Sprintf(insertGoalsQuery, strings.TrimSuffix(str.String(), ", "))
+}
+
+func buildUpdateGoalsQuery(goals habit_tracker.Goals, now time.Time) string {
+	str := strings.Builder{}
+	nowStr := now.Format(time.RFC3339)
+	for _, goal := range goals {
+		str.WriteString(
+			fmt.Sprintf(UpdateGoalsQuery, goal.Description, nowStr, goal.ID),
+		)
+	}
+
+	return str.String()
 }
