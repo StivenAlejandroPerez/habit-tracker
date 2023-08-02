@@ -28,6 +28,15 @@ func (er *EventRepository) InsertEvents(ctx context.Context, events habit_tracke
 	return nil
 }
 
+func (er *EventRepository) UpdateEvents(ctx context.Context, events habit_tracker.Events, now time.Time) error {
+	_, err := er.db.ExecContext(ctx, buildUpdateEventsQuery(events, now))
+	if err != nil {
+		return fmt.Errorf("[err:%w]", err)
+	}
+
+	return nil
+}
+
 func buildInsertEventsQuery(events habit_tracker.Events, now time.Time) string {
 	str := strings.Builder{}
 	nowStr := now.Format(time.RFC3339)
@@ -42,4 +51,24 @@ func buildInsertEventsQuery(events habit_tracker.Events, now time.Time) string {
 	}
 
 	return fmt.Sprintf(insertEventsQuery, strings.TrimSuffix(str.String(), ", "))
+}
+
+func buildUpdateEventsQuery(events habit_tracker.Events, now time.Time) string {
+	str := strings.Builder{}
+	nowStr := now.Format(time.RFC3339)
+	for _, event := range events {
+		str.WriteString(
+			fmt.Sprintf(
+				UpdateEventsQuery,
+				event.HabitID,
+				event.Subject,
+				event.StartAt.Format(time.RFC3339),
+				event.EndAt.Format(time.RFC3339),
+				nowStr,
+				event.ID,
+			),
+		)
+	}
+
+	return str.String()
 }

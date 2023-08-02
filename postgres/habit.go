@@ -49,6 +49,21 @@ func (hr *HabitRepository) InsertHabitRecords(ctx context.Context,
 	return nil
 }
 
+func (hr *HabitRepository) UpdateHabits(ctx context.Context,
+	habits habit_tracker.Habits, now time.Time) error {
+	return nil
+}
+
+func (hr *HabitRepository) UpdateHabitCategories(ctx context.Context,
+	habitCategories habit_tracker.HabitCategories, now time.Time) error {
+	return nil
+}
+
+func (hr *HabitRepository) UpdateHabitRecords(ctx context.Context,
+	habitRecords habit_tracker.HabitRecords, now time.Time) error {
+	return nil
+}
+
 func buildInsertHabitsQuery(habits habit_tracker.Habits, now time.Time) string {
 	str := strings.Builder{}
 	nowStr := now.Format(time.RFC3339)

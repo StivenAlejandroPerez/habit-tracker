@@ -28,6 +28,15 @@ func (tr *TagRepository) InsertTags(ctx context.Context, tags habit_tracker.Tags
 	return nil
 }
 
+func (tr *TagRepository) UpdateTags(ctx context.Context, tags habit_tracker.Tags, now time.Time) error {
+	_, err := tr.db.ExecContext(ctx, buildUpdateTagsQuery(tags, now))
+	if err != nil {
+		return fmt.Errorf("[err:%w]", err)
+	}
+
+	return nil
+}
+
 func buildInsertTagsQuery(tags habit_tracker.Tags, now time.Time) string {
 	str := strings.Builder{}
 	nowStr := now.Format(time.RFC3339)
@@ -38,4 +47,16 @@ func buildInsertTagsQuery(tags habit_tracker.Tags, now time.Time) string {
 	}
 
 	return fmt.Sprintf(insertTagsQuery, strings.TrimSuffix(str.String(), ", "))
+}
+
+func buildUpdateTagsQuery(tags habit_tracker.Tags, now time.Time) string {
+	str := strings.Builder{}
+	nowStr := now.Format(time.RFC3339)
+	for _, tag := range tags {
+		str.WriteString(
+			fmt.Sprintf(UpdateTagsQuery, tag.Name, tag.Description, nowStr, tag.ID),
+		)
+	}
+
+	return str.String()
 }
